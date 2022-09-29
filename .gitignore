@@ -1,129 +1,27 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+#importing libraries.
+from selenium import webdriver 
+from webdriver_manager.chrome import ChromeDriverManager
+#collecting rows and headers after setting up our tools.
+#headers
+for i in range(1,6):
+    titles = driver.find_element_by_xpath('//*[@id="notice"]/thead/tr/th['+str(i)+']').text.strip()
+    if titles == "\xa0":
+        continue
+    headers.append(titles)
+#for some details we need to create columns manually.
+headers.append('Procedure', 'Type', 'Buyer')
+#looping the script so that all of the pages can be scraped with our required data.
+for z in range(22000):
+    for y in range (1,26):
+        document_number = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[2]/a').text
+        description = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[3]/span[1]').text
+        buyer = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[3]/span[2]').text
+        procedure = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[3]/span[4]').text
+        type = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[3]/span[5]').text
+        country = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[4]').text
+        publication_date = driver.find_element_by_xpath('//*[@id="notice"]/tbody/tr['+str(y)+']/td[5]').text
+        table_data.append([document_number, description, country, publication_date, procedure, type, buyer])
+    page_button = driver.find_element_by_xpath('//*[@id="middle-column"]/div/div/div[3]/div/div[4]/div/div[2]/div[11]/a')
+    page_button.click()
+#creating our data frame for each loop session.
+df = pd.DataFrame(data= table_data, columns= headers)
